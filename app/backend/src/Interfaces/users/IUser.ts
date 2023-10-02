@@ -1,4 +1,4 @@
-import { Identifiable } from '.';
+import { Identifiable } from '..';
 
 // usuário existente para login
 export interface ILogin {

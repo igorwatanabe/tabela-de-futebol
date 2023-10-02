@@ -1,4 +1,4 @@
-import { Identifiable } from '.';
+import { Identifiable } from '..';
 
 // usuário completo
 export interface IMatch extends Identifiable {
