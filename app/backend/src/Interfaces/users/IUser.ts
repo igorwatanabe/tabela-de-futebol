@@ -2,14 +2,14 @@ import { Identifiable } from '..';
 
 // usuário existente para login
 export interface ILogin {
-  username: string;
+  email: string;
   password: string;
 }
 
 // usuário completo
 export interface IUser extends Identifiable, ILogin {
   role: string
-  email: string
+  username: string
 }
 
 // usuário a ser retornado pela API

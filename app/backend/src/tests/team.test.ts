@@ -52,9 +52,7 @@ describe('Seu teste', () => {
   it('Deve retornar o time pelo id corretamente', async function() {
     sinon.stub(SequelizeTeam, 'findByPk').resolves(team as any);
 
-    const { status, body } = await chai.request(app).get('/teams/5');
-    console.log(status);
-    
+    const { status, body } = await chai.request(app).get('/teams/5');    
 
     expect(status).to.equal(200);
     expect(body).to.deep.equal(team);
