@@ -54,8 +54,8 @@ describe('Login Tests', () => {
       .post('/login')
       .send(validLoginBody);
 
-    expect(status).to.equal(404);
-    expect(body).to.be.deep.equal({ message: 'User not found' });
+    expect(status).to.equal(401);
+    expect(body).to.be.deep.equal({ message: 'Invalid email or password' });
   });
 
   it('Deve retornar um token quando o loga corretamente', async function() {
@@ -79,16 +79,39 @@ describe('Login Tests', () => {
       .post('/login')
       .send(validLoginBody);
 
-    expect(status).to.equal(400);
+    expect(status).to.equal(401);
     expect(body.message).to.equal('Invalid email or password');
   });
-
-  // describe('Token Testes, rota /login/role', () => {
-  //   it('Deve retornar um erro caso nao tenha o Token',async function() {
-  //     const { status, body } = await chai.request(app).post('/login/role');
-
-  //   expect(status).to.equal(404);
-  //   expect(body.message).to.equal('Token not found');
-  //   })
-  // })
 });
+
+describe('Token Testes, rota /login/role', () => {
+  it('Deve retornar um erro caso nao tenha um Token',async function() {
+    const { status, body } = await chai.request(app).get('/login/role');
+    expect(status).to.equal(401);
+    expect(body.message).to.equal('Token not found');
+  });
+
+  it('Deve retornar um erro caso o Token seja inválido',async function() {
+    const { status, body } = await chai.request(app)
+      .get('/login/role')
+      .set('authorization', 'invalidToken');
+
+    expect(status).to.equal(401);
+    expect(body.message).to.equal('Token must be a valid token');
+    });
+});
+
+describe('Role Teste, rota /login/role', () => {
+  it('Deve retornar o role do user',async function() {
+    sinon.stub(SequelizeUser, 'findOne').resolves({ role: "admin" } as any);
+    sinon.stub(JWT, 'verify').resolves();
+
+    const { status, body } = await chai.request(app)
+      .get('/login/role')
+      .set('authorization', 'Bearer validToken')
+      
+    expect(status).to.equal(200);
+    expect(body).to.deep.equal({ role: "admin" });
+  });
+});
+

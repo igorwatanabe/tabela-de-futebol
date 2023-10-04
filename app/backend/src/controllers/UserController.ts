@@ -15,4 +15,13 @@ export default class UsersController {
     }
     return res.status(200).json(serviceResponse.data);
   }
+
+  public async findRole(req: Request, res: Response): Promise<Response> {
+    const serviceResponse = await this.userService.findRole(res.locals.user.email);
+
+    if (serviceResponse.status !== 'SUCCESSFUL') {
+      return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
+    }
+    return res.status(200).json(serviceResponse.data);
+  }
 }

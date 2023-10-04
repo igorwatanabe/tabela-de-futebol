@@ -17,11 +17,16 @@ class Validations {
 
   static async validateToken(req: Request, res: Response, next: NextFunction):
   Promise<Response | void> {
-    const token = req.headers.authorization;
-    if (!token) {
-      return res.status(404).json({ message: 'Token not found' });
+    const bearerToken = req.headers.authorization;
+    if (!bearerToken) {
+      return res.status(401).json({ message: 'Token not found' });
     }
+    const [type, token] = bearerToken.split(' ');
+    if (type !== 'Bearer') return res.status(401).json({ message: 'Token must be a valid token' });
+
     const validToken = JWT.verify(token);
+    res.locals.user = validToken;
+
     if (validToken === 'Token must be a valid token') {
       return res.status(401).json({ message: validToken });
     }
