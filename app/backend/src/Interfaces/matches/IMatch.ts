@@ -18,5 +18,12 @@ export interface IMatchAdapter extends IMatch {
   awayTeam: teamNameById | undefined
 }
 
+export interface IMatchCreate {
+  homeTeamId: number
+  homeTeamGoals: number
+  awayTeamId: number
+  awayTeamGoals: number
+}
+
 // usuário a ser retornado pela API
 // export type IUserResponse = Omit<IMatch, 'password'>;

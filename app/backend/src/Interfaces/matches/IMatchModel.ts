@@ -1,5 +1,5 @@
 import { ID } from '..';
-import { IMatch, IMatchAdapter } from './IMatch';
+import { IMatch, IMatchAdapter, IMatchCreate } from './IMatch';
 
 export interface IMatchModel {
   findAll(statusGame: string): Promise<IMatchAdapter[]>
@@ -7,4 +7,5 @@ export interface IMatchModel {
   updateMatchGoals(id:number, homeTeamGoals: number, awayTeamGoals: number)
   :Promise<void>
   findById(id:ID): Promise<IMatch | null>
+  createMatch(data:IMatchCreate): Promise<IMatch>
 }

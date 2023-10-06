@@ -8,6 +8,13 @@ const router = Router();
 
 router.get('/', (req, res) => matchController.getAllMatches(req, res));
 
+router.post(
+  '/',
+  Validations.validateToken,
+  Validations.validateInputCreateMatch,
+  (req, res) => matchController.createMatch(req, res),
+);
+
 router.patch(
   '/:id',
   Validations.validateToken,
