@@ -6,6 +6,7 @@ import {
   Model,
 } from 'sequelize';
 import db from '.';
+import { teamNameById } from '../../Interfaces/matches/IMatch';
 import SequelizeTeam from './SequelizeTeam';
 // import OtherModel from './OtherModel';
 
@@ -17,6 +18,8 @@ InferCreationAttributes<SequelizeMatch>> {
   declare awayTeamId: number;
   declare awayTeamGoals: number;
   declare inProgress: boolean;
+  declare homeTeam?: teamNameById;
+  declare awayTeam?: teamNameById;
 }
 
 SequelizeMatch.init({
