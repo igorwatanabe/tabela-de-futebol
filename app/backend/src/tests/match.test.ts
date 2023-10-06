@@ -5,6 +5,7 @@ import SequelizeMatch from '../database/models/SequelizeMatch';
 import chaiHttp = require('chai-http');
 
 import { app } from '../app';
+import JWT from '../utils/JWT';
 import { matches, statusGameFalse, statusGameTrue } from './mocks/Matches.mocks';
 
 
@@ -43,5 +44,22 @@ describe('Matches Tests, rota /matches', () => {
     
     expect(status).to.equal(200);
     expect(body).to.deep.equal(statusGameTrue);
+  });
+});
+
+describe('Matches Tests, rota /matches/:id/finish', () => {
+  afterEach(sinon.restore);
+  it('Deve retornar uma mensagem com a partida finalizada', async function() {
+    sinon.stub(SequelizeMatch, 'update').resolves({ message: "Finished" }  as any);
+    sinon.stub(JWT, 'verify').resolves();
+
+    const { status, body } = await chai.request(app)
+    .patch('/matches/41/finish')
+    .set('authorization', 'Bearer validToken')
+    console.log(body);
+    
+
+    expect(status).to.equal(200);
+    expect(body.message).to.equal("Finished");
   });
 });
