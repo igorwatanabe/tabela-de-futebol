@@ -30,4 +30,16 @@ export default class MatchService {
 
     return { status: 'SUCCESSFUL', data: { message: 'Finished' } };
   }
+
+  public async updateMatchGoals(id:number, homeTeamGoals: number, awayTeamGoals: number)
+    : Promise<ServiceResponse<ServiceMessage>> {
+    const matchInProgress = await this.matchModel.findById(id);
+
+    if (!matchInProgress?.inProgress) {
+      return { status: 'INVALID_DATA', data: { message: 'No match in progress' } };
+    }
+
+    await this.matchModel.updateMatchGoals(id, homeTeamGoals, awayTeamGoals);
+    return { status: 'SUCCESSFUL', data: { message: 'Updated Goals' } };
+  }
 }

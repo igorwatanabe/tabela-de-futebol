@@ -91,7 +91,23 @@ const statusGameFalse = [
   }
 ]
 
-export {
-  matches, statusGameFalse, statusGameTrue
+const matchInProgress = {
+  id: 41,
+  homeTeamId: 16,
+  homeTeamGoals: 2,
+  awayTeamId: 9,
+  awayTeamGoals: 0,
+  inProgress: true,
 }
+
+const matchFinished = {
+  id: 41,
+  homeTeamId: 16,
+  homeTeamGoals: 2,
+  awayTeamId: 9,
+  awayTeamGoals: 0,
+  inProgress: false,
+}
+
+export { matchFinished, matchInProgress, matches, statusGameFalse, statusGameTrue }
 

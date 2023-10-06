@@ -6,7 +6,7 @@ import chaiHttp = require('chai-http');
 
 import { app } from '../app';
 import JWT from '../utils/JWT';
-import { matches, statusGameFalse, statusGameTrue } from './mocks/Matches.mocks';
+import { matchFinished, matchInProgress, matches, statusGameFalse, statusGameTrue } from './mocks/Matches.mocks';
 
 
 chai.use(chaiHttp);
@@ -55,11 +55,39 @@ describe('Matches Tests, rota /matches/:id/finish', () => {
 
     const { status, body } = await chai.request(app)
     .patch('/matches/41/finish')
-    .set('authorization', 'Bearer validToken')
-    console.log(body);
-    
+    .set('authorization', 'Bearer validToken') 
 
     expect(status).to.equal(200);
     expect(body.message).to.equal("Finished");
+  });
+});
+
+describe('Matches Tests, rota /matches/:id', () => {
+  afterEach(sinon.restore);
+  it('Deve retornar uma mensagem com os goals atualizados corretamente', async function() {
+    sinon.stub(SequelizeMatch, 'findByPk').resolves(matchInProgress  as any);
+    sinon.stub(SequelizeMatch, 'update').resolves({ message: "Updated Goals" }  as any);
+    sinon.stub(JWT, 'verify').resolves();
+
+    const { status, body } = await chai.request(app)
+    .patch('/matches/41')
+    .set('authorization', 'Bearer validToken')
+    
+
+    expect(status).to.equal(200);
+    expect(body.message).to.equal("Updated Goals");
+  });
+
+  it('Deve retornar uma mensagem com os goals atualizados corretamente', async function() {
+    sinon.stub(SequelizeMatch, 'findByPk').resolves(matchFinished  as any);
+    sinon.stub(SequelizeMatch, 'update').resolves({ message: "No match in progress" }  as any);
+    sinon.stub(JWT, 'verify').resolves();
+
+    const { status, body } = await chai.request(app)
+    .patch('/matches/41')
+    .set('authorization', 'Bearer validToken')
+
+    expect(status).to.equal(400);
+    expect(body.message).to.equal("No match in progress");
   });
 });

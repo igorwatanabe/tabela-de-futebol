@@ -7,6 +7,13 @@ const matchController = new MatchesController();
 const router = Router();
 
 router.get('/', (req, res) => matchController.getAllMatches(req, res));
+
+router.patch(
+  '/:id',
+  Validations.validateToken,
+  (req, res) => matchController.updateMatchGoals(req, res),
+);
+
 router.patch(
   '/:id/finish',
   Validations.validateToken,
