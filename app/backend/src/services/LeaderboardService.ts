@@ -1,5 +1,5 @@
 import { ServiceResponse } from '../Interfaces/ServiceResponse';
-import { ILeaderboard } from '../Interfaces/leaderboards/ILeaderboard';
+import { ILeaderboard, ILeaderboardStatistics } from '../Interfaces/leaderboards/ILeaderboard';
 import { IMatchAdapter } from '../Interfaces/matches/IMatch';
 import { IMatchModel } from '../Interfaces/matches/IMatchModel';
 import MatchModel from '../models/MatchModel';
@@ -146,8 +146,10 @@ export default class MatchService {
     this.calculateLeaderboardForWins(allMatches, leaderboard);
     this.calculateLeaderboardForDraws(allMatches, leaderboard);
     this.calculateLeaderboardForLosses(allMatches, leaderboard);
+    const updatedBoard = this.calculateLeaderboardStatistics(leaderboard);
+    this.leaderboardOrder(updatedBoard as ILeaderboardStatistics[]);
 
-    return { status: 'SUCCESSFUL', data: leaderboard };
+    return { status: 'SUCCESSFUL', data: updatedBoard };
   }
 
   private calculateLeaderboardForWins = (allMatches: IMatchAdapter[], leaderboard: ILeaderboard[])
@@ -214,5 +216,33 @@ export default class MatchService {
             goalsOwn: awayTeamGoals }; leaderboard.push(newItem);
         }
       });
+  };
+
+  private calculateLeaderboardStatistics = (leaderboard: ILeaderboard[])
+  : ILeaderboard[] => leaderboard.map((board) => {
+    const updatedBoard = { ...board };
+
+    const goalsBalance = updatedBoard.goalsFavor - updatedBoard.goalsOwn;
+    const efficiency = (updatedBoard.totalPoints / (updatedBoard.totalGames * 3)) * 100;
+
+    updatedBoard.goalsBalance = goalsBalance;
+    updatedBoard.efficiency = `${efficiency.toFixed(2)}`;
+
+    return updatedBoard;
+  });
+
+  private leaderboardOrder = (updatedBoard:ILeaderboardStatistics[]):void => {
+    updatedBoard.sort((teamA, teamB) => {
+      if (teamB.totalPoints !== teamA.totalPoints) {
+        return teamB.totalPoints - teamA.totalPoints;
+      }
+      if (teamB.totalVictories !== teamA.totalVictories) {
+        return teamB.totalVictories - teamA.totalVictories;
+      }
+      if (teamB.goalsBalance !== teamA.goalsBalance) {
+        return teamB.goalsBalance - teamA.goalsBalance;
+      }
+      return teamB.goalsFavor - teamA.goalsFavor;
+    });
   };
 }

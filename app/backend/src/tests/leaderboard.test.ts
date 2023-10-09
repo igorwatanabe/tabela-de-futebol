@@ -6,17 +6,17 @@ import chaiHttp = require('chai-http');
 
 import { app } from '../app';
 import { leaderboardHome } from './mocks/Leaderboards.mocks';
-import { statusGameFalse } from './mocks/Matches.mocks';
+import { allMatchesFinished } from './mocks/Matches.mocks';
 
 
 chai.use(chaiHttp);
 
 const { expect } = chai;
 
-describe('Matches Tests, rota /matches', () => {
+describe('Leaderboards Tests, rota /leaderboard/home', () => {
   afterEach(sinon.restore);
-  it('Deve retornar a tabela corretamente, sem ordenação', async function() {
-    sinon.stub(SequelizeMatch, 'findAll').resolves(statusGameFalse as any);
+  it('Deve retornar a tabela corretamente, com ordenação', async function() {
+    sinon.stub(SequelizeMatch, 'findAll').resolves(allMatchesFinished as any);
 
     const { status, body } = await chai.request(app).get('/leaderboard/home');    
 
