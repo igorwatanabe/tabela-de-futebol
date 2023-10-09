@@ -13,8 +13,10 @@ export default class LeaderboardController {
     let serviceResponse;
     if (homeOrAway === 'home') {
       serviceResponse = await this.leaderboardService.getAllHome();
-    } else {
+    } else if (homeOrAway === 'away') {
       serviceResponse = await this.leaderboardService.getAllAway();
+    } else {
+      serviceResponse = await this.leaderboardService.getAll();
     }
     return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
   }

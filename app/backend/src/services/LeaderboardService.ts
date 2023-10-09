@@ -18,7 +18,7 @@ export default class MatchService {
 
     this.calcLeaderboardForWinsHome(allMatches, leaderboard);
     this.calcLeaderboardForDrawsHome(allMatches, leaderboard);
-    this.calcLeaderboardForLosses(allMatches, leaderboard);
+    this.calcLeaderboardForLossesHome(allMatches, leaderboard);
     const updatedBoard = this.calculateLeaderboardStatistics(leaderboard);
     this.leaderboardOrder(updatedBoard as ILeaderboardStatistics[]);
 
@@ -69,7 +69,7 @@ export default class MatchService {
       });
   };
 
-  private calcLeaderboardForLosses = (allMatches: IMatchAdapter[], leaderboard: ILeaderboard[])
+  private calcLeaderboardForLossesHome = (allMatches: IMatchAdapter[], leaderboard: ILeaderboard[])
   : void => {
     allMatches.filter(({ homeTeamGoals, awayTeamGoals }) => (homeTeamGoals < awayTeamGoals))
       .forEach(({ homeTeamGoals, awayTeamGoals, homeTeam }) => {
@@ -199,4 +199,22 @@ export default class MatchService {
         }
       });
   };
+
+  public async getAll(): Promise<ServiceResponse<ILeaderboard[]>> {
+    const statusGame = 'false';
+    const allMatches = await this.matchModel.findAll(statusGame);
+
+    const leaderboard: ILeaderboard[] = [];
+
+    this.calcLeaderboardForWinsHome(allMatches, leaderboard);
+    this.calcLeaderboardForDrawsHome(allMatches, leaderboard);
+    this.calcLeaderboardForLossesHome(allMatches, leaderboard);
+    this.calcLeaderboardForWinsAway(allMatches, leaderboard);
+    this.calcLeaderboardForDrawsAway(allMatches, leaderboard);
+    this.calcLeaderboardForLossesAway(allMatches, leaderboard);
+    const updatedBoard = this.calculateLeaderboardStatistics(leaderboard);
+    this.leaderboardOrder(updatedBoard as ILeaderboardStatistics[]);
+
+    return { status: 'SUCCESSFUL', data: updatedBoard };
+  }
 }
