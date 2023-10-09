@@ -8,10 +8,14 @@ export default class LeaderboardController {
   ) { }
 
   public async getAll(req: Request, res: Response): Promise<Response> {
-    // const homeOrAway = (req.path).replace('/', '');
-    // console.log('controller', homeOrAway);
+    const homeOrAway = (req.path).replace('/', '');
 
-    const serviceResponse = await this.leaderboardService.getAll();
+    let serviceResponse;
+    if (homeOrAway === 'home') {
+      serviceResponse = await this.leaderboardService.getAllHome();
+    } else {
+      serviceResponse = await this.leaderboardService.getAllAway();
+    }
     return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
   }
 }
